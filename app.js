@@ -13,6 +13,11 @@ const render = require("./lib/htmlRenderer");
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+
+// Create an array to store Employee inputs in.
+let team = [];
+
+// Create the main prompt that will go into each employee's profile.
 const teamBuilder = [
     {
         type: 'input',
@@ -40,24 +45,101 @@ const teamBuilder = [
     }
 ]
 
+// Once the main prompt has been answered, narrow down the results to see what kind of employee the employer is adding.
+employeeEntry = () => {
+    inquirer.prompt(teamBuilder)
+        .then(function (data) {
 
+            // When "Manager" has been selected, fill in missing data and push information to team.
+            if (data.role === "Manager") {
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        name: 'officeNumber',
+                        message: "What is your manager's office number?"
+                    },
+                    {
+                        type: 'list',
+                        name: 'another',
+                        messge: 'Are there more employees to add to the team?',
+                        choices: [
+                            'yes',
+                            'no'
+                        ]
+                    }
+                ])
+                    .then(function (dataManager) {
+                        const manager = new Manager(data.name, data.id, data.email, dataManager.officeNumber);
+                        team.push(manager);
+                        if (dataManager.another === 'yes') {
+                            employeeEntry();
+                        } else {
+                            fs.writeFileSync('MyTeam/team.html', render(team));
+                            console.log('Successfully update your team page!')
+                        }
+                    })
+            }
 
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
+            // When "Engineer" has been selected, fill in missing data and push information to team.
+            if (data.role === "Engineer") {
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        name: 'github',
+                        message: "Where can I view your Employee's work on GitHub?"
+                    },
+                    {
+                        type: 'list',
+                        name: 'another',
+                        messge: 'Are there more employees to add to the team?',
+                        choices: [
+                            'yes',
+                            'no'
+                        ]
+                    }
+                ])
+                    .then(function (dataEngineer) {
+                        const engineer = new Engineer(data.name, data.id, data.email, dataEngineer.github);
+                        team.push(engineer);
+                        if (dataEngineer.another === 'yes') {
+                            employeeEntry();
+                        } else {
+                            fs.writeFileSync('MyTeam/team.html', render(team));
+                            console.log('Successfully update your team page!')
+                        }
+                    })
+            }
 
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
+            // When "Intern" has been selected, fill in missing data and push information to team.
+            if (data.role === 'Intern') {
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        name: 'school',
+                        message: 'Where does your intern attend school?'
+                    },
+                    {
+                        type: 'list',
+                        name: 'another',
+                        messge: 'Are there more employees to add to the team?',
+                        choices: [
+                            'yes',
+                            'no'
+                        ]
+                    }
+                ])
+                    .then(function (dataIntern) {
+                        const intern = new Intern(data.name, data.id, data.email, dataIntern.school);
+                        team.push(intern);
+                        if (dataIntern.another === 'yes') {
+                            employeeEntry();
+                        } else {
+                            fs.writeFileSync('MyTeam/team.html', render(team));
+                            console.log('Successfully update your team page!')
+                        }
+                    })
+            }
+        })
+}
 
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+employeeEntry();
