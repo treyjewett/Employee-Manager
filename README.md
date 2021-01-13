@@ -30,7 +30,7 @@ When "node app.js" is run in Terminal:
 
 <img src="MyTeam\Assets\MyTeamExample.png" alt="Rendered Team Page">
 
-<a href="" target="_blank">Click here to watch a walkthrough video on how to use the application!</a>
+<a href="https://youtu.be/bIqVH5qcSw4" target="_blank">Click here to watch a walkthrough video on how to use the application!</a>
 
 ## License:
 
