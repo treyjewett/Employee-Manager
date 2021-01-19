@@ -15,7 +15,7 @@ This application can be used to add team members to a workforce via Node.
 
 ## Code Utilized
 
-This aplication was made using JavaScript, HTML, and CSS.
+This application was made using JavaScript, HTML, and CSS.
 
 ## What to Expect
 
